@@ -146,5 +146,3 @@ Validated across:
 
 **Evo Engineering**
 Structure-aware systems for infrastructure, computation, and control.
-
-```
