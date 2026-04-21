@@ -1,41 +1,48 @@
 # Helix Compute — Selective Compute Engine
 
-Stop recomputing everything.
+**Stop recomputing everything.**
 
 Helix Compute processes only what changed — reducing compute cost, minimizing data transfer, and preserving exact, verifiable state reconstruction.
 
-## What It Does
+---
 
-Traditional pipelines:
+## 🚀 What It Does
 
+**Traditional pipelines:**
 - Recompute entire datasets
 - Transfer full state
 - Waste compute on unchanged data
 
-Helix Compute:
-
+**Helix Compute:**
 - Computes only deltas
 - Applies selective updates
 - Reconstructs full state deterministically
 
-## Key Properties
+---
+
+## ⚡ Key Properties
 
 - ~95% compute reduction on sparse updates
 - 98–99.9% data reduction depending on dataset
 - Bitwise exact reconstruction (SHA-256 verified)
-- Works with:
-  - JSON datasets
-  - NDJSON / streaming logs
-  - Telemetry pipelines
 
-## Example Run
+Works with:
+- JSON datasets  
+- NDJSON / streaming logs  
+- Telemetry pipelines  
+
+---
+
+## 🔬 Example Run
 
 ```bash
 cd examples
 python run.py
+````
 
-Dataset: 2015-01-01-15.json (NDJSON log)
+### Dataset: `2015-01-01-15.json` (NDJSON log)
 
+```
 RESULTS
 ------------------------------------------------------------
 Full Size : 26206459 bytes
@@ -52,9 +59,13 @@ Hash Match : YES
 
 TIME
 Execution Time : 2.006s
+```
 
-Dataset: AEP_hourly.json (Structured JSON)
+---
 
+### Dataset: `AEP_hourly.json` (Structured JSON)
+
+```
 RESULTS
 ------------------------------------------------------------
 Full Size : 7528951 bytes
@@ -71,70 +82,69 @@ Hash Match : YES
 
 TIME
 Execution Time : 1.297s
+```
 
-What This Means
+---
 
-Systems with sparse changes benefit massively
+## 🧠 What This Means
 
-Streaming and telemetry pipelines see extreme reductions
+* Systems with sparse changes benefit massively
+* Streaming and telemetry pipelines see extreme reductions
+* Reconstruction is exact — not approximate
 
-Reconstruction is exact, not approximate
+> Helix Compute does not optimize compute.
+> **It avoids unnecessary compute entirely.**
 
+---
 
-Helix Compute does not optimize compute.
-
-It avoids unnecessary compute entirely.
-
-Repository Structure
-
-examples/
-  run.py # Proof runner
-  *.json # Test datasets (JSON + NDJSON)
-
-How It Works
+## 🏗️ How It Works
 
 1. Load base dataset
-
-
-2. Apply small mutation (simulated change)
-
-
+2. Apply mutation (change)
 3. Compute delta (insert/update/delete)
-
-
-4. Apply selective compute (only changed records)
-
-
+4. Execute only on changed records
 5. Rebuild full dataset
-
-
 6. Verify with SHA-256
 
+---
 
-
-Validation
+## 🔐 Validation
 
 All outputs are verified via:
 
+```
 SHA-256(original) == SHA-256(rebuilt)
+```
 
 No approximation. No drift.
 
-Status
+---
+
+## 📁 Repo Structure
+
+```
+examples/
+  run.py        # Demo runner
+  *.json        # Test datasets (JSON + NDJSON)
+```
+
+---
+
+## 📊 Status
 
 Prototype / proof-of-concept.
 
 Validated across:
 
-Structured datasets
+* Structured datasets
+* Log streams (NDJSON)
+* Multi-scale record counts
 
-Log streams (NDJSON)
+---
 
-Multi-scale record counts
+## 🏢 Built By
 
-
-Built by
-
-Evo Engineering
-
+**Evo Engineering**
 Structure-aware systems for infrastructure, computation, and control.
+
+```
