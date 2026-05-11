@@ -4,32 +4,71 @@
 
 Helix Compute processes only what changed — reducing compute cost, minimizing data transfer, and preserving exact, verifiable state reconstruction.
 
+Helix operates as an execution-layer optimization for incremental systems.
+
+Instead of recomputing entire pipelines after small mutations, Helix performs:
+
+* sparse dependency-aware execution
+* reverse dependency indexing
+* localized replay propagation
+* deterministic reconstruction validation
+
+---
+
+## 📄 Whitepaper
+
+See:
+
+* `docs/HELIX_WHITEPAPER_V4.pdf`
+
+Topics covered:
+
+* sparse replay propagation
+* reverse dependency indexing
+* bounded dependency locality
+* topology benchmark methodology
+* deterministic replay validation
+* incremental execution benchmarks
+
 ---
 
 ## 🚀 What It Does
 
-**Traditional pipelines:**
-- Recompute entire datasets
-- Transfer full state
-- Waste compute on unchanged data
+### Traditional pipelines
 
-**Helix Compute:**
-- Computes only deltas
-- Applies selective updates
-- Reconstructs full state deterministically
+Most systems:
+
+* recompute entire datasets
+* transfer full state
+* repeatedly traverse unchanged dependencies
+* waste compute on stable data
+
+### Helix Compute
+
+Helix instead:
+
+* computes only deltas
+* executes only affected dependency neighborhoods
+* applies selective replay propagation
+* reconstructs full state deterministically
 
 ---
 
 ## ⚡ Key Properties
 
-- ~95% compute reduction on sparse updates
-- 98–99.9% data reduction depending on dataset
-- Bitwise exact reconstruction (SHA-256 verified)
+* ~95% compute reduction on sparse updates
+* 98–99.9% data reduction depending on workload
+* Bitwise exact reconstruction (SHA-256 verified)
+* Reverse-indexed propagation acceleration
+* Bounded replay locality under mutation stress
 
 Works with:
-- JSON datasets  
-- NDJSON / streaming logs  
-- Telemetry pipelines  
+
+* JSON datasets
+* NDJSON / streaming logs
+* Telemetry pipelines
+* Time-series infrastructure
+* Incremental ETL systems
 
 ---
 
@@ -38,11 +77,11 @@ Works with:
 ```bash
 cd examples
 python run.py
-````
+```
 
 ### Dataset: `2015-01-01-15.json` (NDJSON log)
 
-```
+```text
 RESULTS
 ------------------------------------------------------------
 Full Size : 26206459 bytes
@@ -65,7 +104,7 @@ Execution Time : 2.006s
 
 ### Dataset: `AEP_hourly.json` (Structured JSON)
 
-```
+```text
 RESULTS
 ------------------------------------------------------------
 Full Size : 7528951 bytes
@@ -86,11 +125,24 @@ Execution Time : 1.297s
 
 ---
 
-## 🧠 What This Means
+## 🧠 Why It Matters
 
-* Systems with sparse changes benefit massively
-* Streaming and telemetry pipelines see extreme reductions
-* Reconstruction is exact — not approximate
+Systems with sparse mutation benefit massively from locality-aware replay.
+
+Helix is designed for workloads where:
+
+* recomputation dominates runtime cost
+* append-heavy mutation is common
+* deterministic replay matters
+* dependency propagation remains localized
+
+These conditions commonly appear in:
+
+* telemetry systems
+* historian pipelines
+* CDC workflows
+* streaming ETL
+* structured event processing
 
 > Helix Compute does not optimize compute.
 > **It avoids unnecessary compute entirely.**
@@ -99,12 +151,24 @@ Execution Time : 1.297s
 
 ## 🏗️ How It Works
 
+```text
+append mutation
+        ↓
+reverse dependency lookup
+        ↓
+localized replay window
+        ↓
+deterministic reconstruction
+```
+
+Execution flow:
+
 1. Load base dataset
 2. Apply mutation (change)
 3. Compute delta (insert/update/delete)
-4. Execute only on changed records
-5. Rebuild full dataset
-6. Verify with SHA-256
+4. Execute only affected dependencies
+5. Rebuild full dataset deterministically
+6. Verify reconstruction via SHA-256
 
 ---
 
@@ -112,37 +176,64 @@ Execution Time : 1.297s
 
 All outputs are verified via:
 
-```
+```text
 SHA-256(original) == SHA-256(rebuilt)
 ```
 
-No approximation. No drift.
+No approximation.
+No drift.
+No probabilistic reconstruction.
+
+---
+
+## 📊 Benchmark Highlights
+
+From the benchmark suite:
+
+* Indexed expansion speedup: **11,940.78x**
+* Best execution compression: **13,333x**
+* Replay validation: **MATCH: True**
+* Dependency locality remained bounded (~1.2–1.4 radius)
+
+The benchmark suite includes:
+
+* tree / mesh / clustered topologies
+* random / hotspot / migration-wave mutation
+* replay-storm propagation conditions
+* datasets ranging from 10K → 100K records
 
 ---
 
 ## 📁 Repo Structure
 
-```
+```text
+docs/
+  HELIX_WHITEPAPER_V4.pdf
+
 examples/
-  run.py        # Demo runner
-  *.json        # Test datasets (JSON + NDJSON)
+  run.py
+  run_api.py
+  *.json
 ```
 
 ---
 
-## 📊 Status
+## 📌 Status
 
 Prototype / proof-of-concept.
 
 Validated across:
 
-* Structured datasets
-* Log streams (NDJSON)
-* Multi-scale record counts
+* structured datasets
+* NDJSON log streams
+* sparse mutation workloads
+* replay locality benchmarks
+* multi-scale record counts
 
 ---
 
 ## 🏢 Built By
 
 **Evo Engineering**
+
 Structure-aware systems for infrastructure, computation, and control.
